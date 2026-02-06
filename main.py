@@ -8,6 +8,7 @@ import tkinter as tk
 from tkinter import ttk
 import threading
 import time
+import os
 from datetime import datetime
 
 # Import configuration
@@ -409,19 +410,39 @@ def main():
         app = RiverDashboard()
         app.mainloop()
     except Exception as e:
-        print("\n" + "=" * 50)
-        print("ERROR: Application crashed!")
-        print("=" * 50)
-        print(f"Error: {e}")
-        print("\nFull traceback:")
-        import traceback
-        traceback.print_exc()
-        print("\n" + "=" * 50)
-        print("Troubleshooting:")
-        print("1. Run: python3 debug_pi.py")
-        print("2. Run: ./diagnose.sh")
-        print("3. Check: PI_TROUBLESHOOTING.md")
-        print("=" * 50)
+        error_str = str(e).lower()
+
+        # Check for common X11/display errors
+        if 'display' in error_str or 'x11' in error_str or 'screen' in error_str or 'couldn\'t connect' in error_str:
+            print("\n" + "=" * 50)
+            print("⚠️  DISPLAY ERROR - X11 Not Running")
+            print("=" * 50)
+            print("The GUI cannot display because X11 is not available.")
+            print("\nThis usually happens when:")
+            print("  • Running via SSH without X11 forwarding")
+            print("  • Desktop environment not started")
+            print("  • DISPLAY variable not set correctly")
+            print("\nSOLUTIONS:")
+            print("  1. Run directly on Pi (use keyboard/mouse/monitor)")
+            print("  2. Use VNC instead of SSH")
+            print("  3. If using SSH, run: export DISPLAY=:0")
+            print("\nCurrent DISPLAY:", os.environ.get('DISPLAY', 'NOT SET'))
+            print("=" * 50)
+        else:
+            print("\n" + "=" * 50)
+            print("ERROR: Application crashed!")
+            print("=" * 50)
+            print(f"Error: {e}")
+            print("\nFull traceback:")
+            import traceback
+            traceback.print_exc()
+            print("\n" + "=" * 50)
+            print("Troubleshooting:")
+            print("1. Run: python3 debug_pi.py")
+            print("2. Run: ./diagnose.sh")
+            print("3. Check: PI_TROUBLESHOOTING.md")
+            print("=" * 50)
+
         import sys
         sys.exit(1)
 
