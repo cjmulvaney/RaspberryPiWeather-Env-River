@@ -1,0 +1,8 @@
+# Core dependencies (cross-platform)
+requests>=2.31.0
+matplotlib>=3.7.0
+
+# Raspberry Pi only dependencies (install only on Pi)
+# adafruit-circuitpython-bme680>=1.6.0
+# adafruit-circuitpython-pm25>=2.2.0
+# adafruit-blinka>=8.20.0

@@ -1,0 +1,36 @@
+Montana River Dashboard - Code Statistics
+==========================================
+
+Core Application Files:
+    2438 total
+
+Documentation Files:
+    1287 total
+
+Detailed Breakdown:
+==================
+     413 main.py
+       1 config/__init__.py
+      49 config/constants.py
+      54 config/rivers.py
+      15 config/towns.py
+     119 total
+       1 data/__init__.py
+      92 data/database.py
+     161 data/nws_api.py
+     116 data/sensors.py
+     155 data/usgs_api.py
+     525 total
+       1 ui/__init__.py
+     164 ui/components.py
+     378 ui/indoor_tab.py
+     214 ui/overview_tab.py
+     233 ui/river_tab.py
+     271 ui/weather_tab.py
+    1261 total
+       1 utils/__init__.py
+      19 utils/platform_detect.py
+      20 total
+      67 test_api.py
+      33 test_sensors.py
+     100 total
