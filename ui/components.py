@@ -4,6 +4,32 @@ from tkinter import ttk
 from config.constants import *
 
 
+def enable_touch_scroll(canvas):
+    """
+    Enable touch drag scrolling on a canvas widget.
+    Call this after creating a canvas to add touch support.
+    """
+    # Touch scrolling state
+    touch_state = {'start_y': 0, 'last_y': 0}
+
+    def on_touch_start(event):
+        touch_state['start_y'] = event.y
+        touch_state['last_y'] = event.y
+
+    def on_touch_move(event):
+        delta_y = touch_state['last_y'] - event.y
+        touch_state['last_y'] = event.y
+        canvas.yview_scroll(int(delta_y / 2), "units")
+
+    def on_touch_end(event):
+        touch_state['start_y'] = 0
+        touch_state['last_y'] = 0
+
+    canvas.bind("<Button-1>", on_touch_start)
+    canvas.bind("<B1-Motion>", on_touch_move)
+    canvas.bind("<ButtonRelease-1>", on_touch_end)
+
+
 class TouchButton(tk.Button):
     """Button optimized for touch interaction with visual feedback."""
 
@@ -41,7 +67,7 @@ class TouchButton(tk.Button):
 
 
 class ScrollableFrame(tk.Frame):
-    """Frame with vertical scrollbar for touch scrolling."""
+    """Frame with vertical scrollbar and touch drag scrolling."""
 
     def __init__(self, parent, **kwargs):
         """Create scrollable frame."""
@@ -69,12 +95,41 @@ class ScrollableFrame(tk.Frame):
         self.canvas.bind_all("<Button-4>", self._on_mousewheel)
         self.canvas.bind_all("<Button-5>", self._on_mousewheel)
 
+        # Enable touch drag scrolling
+        self.canvas.bind("<Button-1>", self._on_touch_start)
+        self.canvas.bind("<B1-Motion>", self._on_touch_move)
+        self.canvas.bind("<ButtonRelease-1>", self._on_touch_end)
+
+        # Touch scrolling state
+        self._touch_start_y = 0
+        self._last_y = 0
+
     def _on_mousewheel(self, event):
         """Handle mouse wheel scrolling."""
         if event.num == 5 or event.delta < 0:
             self.canvas.yview_scroll(1, "units")
         elif event.num == 4 or event.delta > 0:
             self.canvas.yview_scroll(-1, "units")
+
+    def _on_touch_start(self, event):
+        """Handle touch/drag start."""
+        self._touch_start_y = event.y
+        self._last_y = event.y
+
+    def _on_touch_move(self, event):
+        """Handle touch/drag move."""
+        # Calculate how much we've moved
+        delta_y = self._last_y - event.y
+        self._last_y = event.y
+
+        # Scroll the canvas
+        # Divide by 2 for smoother, more natural scrolling
+        self.canvas.yview_scroll(int(delta_y / 2), "units")
+
+    def _on_touch_end(self, event):
+        """Handle touch/drag end."""
+        self._touch_start_y = 0
+        self._last_y = 0
 
 
 class Card(tk.Frame):
@@ -84,7 +139,7 @@ class Card(tk.Frame):
         """Create card container."""
         super().__init__(
             parent,
-            bg=BUTTON_BG,
+            bg=CARD_BG,
             relief=tk.FLAT,
             borderwidth=1,
             **kwargs

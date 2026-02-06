@@ -19,6 +19,10 @@ class OverviewTab(tk.Frame):
         self.content_frame = tk.Frame(self.canvas, bg=BG_COLOR)
         self.canvas.create_window((0, 0), window=self.content_frame, anchor="nw")
 
+        # Enable touch scrolling
+        from ui.components import enable_touch_scroll
+        enable_touch_scroll(self.canvas)
+
         # Title
         self.title_label = tk.Label(
             self.content_frame,

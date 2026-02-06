@@ -39,6 +39,10 @@ class RiverTab(tk.Frame):
         self.canvas.pack(side="left", fill="both", expand=True)
         self.scrollbar.pack(side="right", fill="y")
 
+        # Enable touch scrolling
+        from ui.components import enable_touch_scroll
+        enable_touch_scroll(self.canvas)
+
         # Pagination controls
         self.pagination = PaginationControls(
             self,
@@ -77,20 +81,20 @@ class RiverTab(tk.Frame):
         # Card frame
         card = tk.Frame(
             self.content_frame,
-            bg=BUTTON_BG,
+            bg=CARD_BG,
             relief=tk.FLAT,
             borderwidth=2
         )
         card.pack(fill=tk.X, padx=PADDING * 2, pady=PADDING)
 
         # Header with name and star button
-        header_frame = tk.Frame(card, bg=BUTTON_BG)
+        header_frame = tk.Frame(card, bg=CARD_BG)
         header_frame.pack(fill=tk.X, padx=PADDING, pady=PADDING)
 
         name_label = tk.Label(
             header_frame,
             text=name.upper(),
-            bg=BUTTON_BG,
+            bg=CARD_BG,
             fg=TEXT_COLOR,
             font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold'),
             anchor='w'
@@ -107,7 +111,7 @@ class RiverTab(tk.Frame):
         star_btn.pack(side=tk.RIGHT)
 
         # Data section
-        data_frame = tk.Frame(card, bg=BUTTON_BG)
+        data_frame = tk.Frame(card, bg=CARD_BG)
         data_frame.pack(fill=tk.BOTH, padx=PADDING, pady=PADDING)
 
         # Get site data
@@ -123,7 +127,7 @@ class RiverTab(tk.Frame):
             current_label = tk.Label(
                 data_frame,
                 text=f"Current: {flow_text} • {temp_text}",
-                bg=BUTTON_BG,
+                bg=CARD_BG,
                 fg=TEXT_COLOR,
                 font=(FONT_FAMILY, FONT_SIZE_MEDIUM),
                 anchor='w'
@@ -155,7 +159,7 @@ class RiverTab(tk.Frame):
                 change_label = tk.Label(
                     data_frame,
                     text=change_text,
-                    bg=BUTTON_BG,
+                    bg=CARD_BG,
                     fg=TEXT_COLOR,
                     font=(FONT_FAMILY, FONT_SIZE_SMALL),
                     anchor='w'
@@ -163,13 +167,13 @@ class RiverTab(tk.Frame):
                 change_label.pack(fill=tk.X)
 
             # Spacer
-            tk.Label(data_frame, bg=BUTTON_BG, height=1).pack()
+            tk.Label(data_frame, bg=CARD_BG, height=1).pack()
 
             # Average comparison (placeholder)
             avg_label = tk.Label(
                 data_frame,
                 text="Flow: Average data not available\nTemp: Average data not available",
-                bg=BUTTON_BG,
+                bg=CARD_BG,
                 fg=TEXT_COLOR,
                 font=(FONT_FAMILY, FONT_SIZE_SMALL),
                 anchor='w',
@@ -190,7 +194,7 @@ class RiverTab(tk.Frame):
             time_label = tk.Label(
                 data_frame,
                 text=f"Last Updated: {timestamp}{cached_text}",
-                bg=BUTTON_BG,
+                bg=CARD_BG,
                 fg=TEXT_COLOR,
                 font=(FONT_FAMILY, FONT_SIZE_SMALL),
                 anchor='w'
@@ -202,7 +206,7 @@ class RiverTab(tk.Frame):
             error_label = tk.Label(
                 data_frame,
                 text="⚠️ Data unavailable - check connection",
-                bg=BUTTON_BG,
+                bg=CARD_BG,
                 fg=ALERT_YELLOW,
                 font=(FONT_FAMILY, FONT_SIZE_MEDIUM),
                 anchor='w'

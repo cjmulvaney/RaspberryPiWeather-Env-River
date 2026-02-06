@@ -73,21 +73,22 @@ class IndoorTab(tk.Frame):
         # Air Quality
         pm25 = sensor_data.get('pm25', 0)
         if isinstance(pm25, (int, float)):
+            # Use the new AQI_THRESHOLDS with colors
             if pm25 <= 12:
                 status = "Good"
-                color = GOOD_GREEN
+                color = FOREST_COLOR
             elif pm25 <= 35:
                 status = "Moderate"
-                color = ALERT_YELLOW
+                color = MODERATE_YELLOW
             elif pm25 <= 55:
                 status = "Unhealthy for Sensitive"
-                color = ALERT_ORANGE
+                color = WARNING_ORANGE
             elif pm25 <= 150:
                 status = "Unhealthy"
                 color = ALERT_RED
             else:
                 status = "Very Unhealthy"
-                color = "#8b0000"
+                color = UNHEALTHY_PURPLE
         else:
             status = "N/A"
             color = TEXT_COLOR

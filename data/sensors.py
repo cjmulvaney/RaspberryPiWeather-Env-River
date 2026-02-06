@@ -37,11 +37,36 @@ class SensorReader:
             reset_pin = None  # Using default I2C address
             self.pmsa003i = PM25_I2C(i2c, reset_pin)
 
-            print("Real sensors initialized successfully")
+            print("✓ Real sensors initialized successfully")
 
+        except ImportError as e:
+            print("=" * 60)
+            print("⚠️  SENSOR LIBRARIES NOT INSTALLED")
+            print("=" * 60)
+            print(f"Missing module: {e}")
+            print("\nTo enable real sensors, install these packages:")
+            print("  pip3 install adafruit-circuitpython-bme680")
+            print("  pip3 install adafruit-circuitpython-pm25")
+            print("  pip3 install adafruit-blinka")
+            print("\nAlso ensure I2C is enabled:")
+            print("  sudo raspi-config > Interface Options > I2C > Enable")
+            print("\nFalling back to mocked sensor data for now...")
+            print("=" * 60)
+            self.is_pi = False
         except Exception as e:
-            print(f"Error initializing sensors: {e}")
-            print("Falling back to mocked data")
+            print("=" * 60)
+            print("⚠️  SENSOR INITIALIZATION ERROR")
+            print("=" * 60)
+            print(f"Error: {e}")
+            print("\nPossible causes:")
+            print("  - Sensors not connected to I2C")
+            print("  - Wrong I2C address")
+            print("  - I2C not enabled (run: sudo raspi-config)")
+            print("\nCheck wiring:")
+            print("  BME680:   SDA→GPIO2, SCL→GPIO3, VCC→3.3V, GND→GND")
+            print("  PMSA003I: SDA→GPIO2, SCL→GPIO3, VCC→5V, GND→GND")
+            print("\nFalling back to mocked sensor data for now...")
+            print("=" * 60)
             self.is_pi = False
 
     def read(self) -> Dict[str, float]:
@@ -104,13 +129,16 @@ class SensorReader:
         Determine air quality status based on PM2.5.
         Returns (status_text, color)
         """
+        from config.constants import (FOREST_COLOR, MODERATE_YELLOW,
+                                      WARNING_ORANGE, ALERT_RED, UNHEALTHY_PURPLE)
+
         if pm25 <= 12:
-            return ("Good", "#44ff44")
+            return ("Good", FOREST_COLOR)
         elif pm25 <= 35:
-            return ("Moderate", "#ffa500")
+            return ("Moderate", MODERATE_YELLOW)
         elif pm25 <= 55:
-            return ("Unhealthy for Sensitive", "#ff8c00")
+            return ("Unhealthy for Sensitive", WARNING_ORANGE)
         elif pm25 <= 150:
-            return ("Unhealthy", "#ff4444")
+            return ("Unhealthy", ALERT_RED)
         else:
-            return ("Very Unhealthy", "#8b0000")
+            return ("Very Unhealthy", UNHEALTHY_PURPLE)

@@ -106,23 +106,50 @@ class NWSClient:
             return None
 
     def _get_emoji_from_forecast(self, forecast: str) -> str:
-        """Convert forecast text to weather emoji."""
+        """Convert forecast text to weather emoji using enhanced mapping."""
+        from config.constants import WEATHER_EMOJIS
+
         forecast_lower = forecast.lower()
 
-        if 'thunder' in forecast_lower or 'storm' in forecast_lower:
-            return '⛈️'
+        # Check for matches in priority order (most specific first)
+        if 'thunder' in forecast_lower or 'thunderstorm' in forecast_lower:
+            return WEATHER_EMOJIS['thunderstorm']
+        elif 'heavy rain' in forecast_lower:
+            return WEATHER_EMOJIS['heavy rain']
+        elif 'light rain' in forecast_lower:
+            return WEATHER_EMOJIS['light rain']
         elif 'rain' in forecast_lower or 'shower' in forecast_lower:
-            return '🌧️'
+            return WEATHER_EMOJIS['rain']
+        elif 'heavy snow' in forecast_lower:
+            return WEATHER_EMOJIS['heavy snow']
+        elif 'light snow' in forecast_lower or 'snow shower' in forecast_lower:
+            return WEATHER_EMOJIS['light snow']
         elif 'snow' in forecast_lower:
-            return '❄️'
-        elif 'cloud' in forecast_lower or 'overcast' in forecast_lower:
-            return '☁️'
-        elif 'partly' in forecast_lower or 'mostly sunny' in forecast_lower:
-            return '⛅'
+            return WEATHER_EMOJIS['snow']
+        elif 'sleet' in forecast_lower:
+            return WEATHER_EMOJIS['sleet']
+        elif 'freezing' in forecast_lower:
+            return WEATHER_EMOJIS['freezing']
+        elif 'fog' in forecast_lower:
+            return WEATHER_EMOJIS['fog']
+        elif 'mist' in forecast_lower or 'haze' in forecast_lower:
+            return WEATHER_EMOJIS['mist']
+        elif 'overcast' in forecast_lower:
+            return WEATHER_EMOJIS['overcast']
+        elif 'mostly cloudy' in forecast_lower:
+            return WEATHER_EMOJIS['mostly cloudy']
+        elif 'partly cloudy' in forecast_lower or 'partly sunny' in forecast_lower:
+            return WEATHER_EMOJIS['partly cloudy']
+        elif 'mostly sunny' in forecast_lower:
+            return WEATHER_EMOJIS['mostly sunny']
         elif 'sunny' in forecast_lower or 'clear' in forecast_lower:
-            return '☀️'
+            return WEATHER_EMOJIS['sunny']
+        elif 'cloudy' in forecast_lower or 'cloud' in forecast_lower:
+            return WEATHER_EMOJIS['cloudy']
+        elif 'wind' in forecast_lower:
+            return WEATHER_EMOJIS['windy']
         else:
-            return '🌤️'
+            return WEATHER_EMOJIS['default']
 
     def _cache_forecast(self, location_name: str, data: Dict):
         """Save forecast data to cache file."""

@@ -43,6 +43,10 @@ class WeatherTab(tk.Frame):
         self.canvas.pack(side="left", fill="both", expand=True)
         self.scrollbar.pack(side="right", fill="y")
 
+        # Enable touch scrolling
+        from ui.components import enable_touch_scroll
+        enable_touch_scroll(self.canvas)
+
         # Select first location by default
         if WEATHER_LOCATIONS:
             first_location = f"{WEATHER_LOCATIONS[0][0]}, {WEATHER_LOCATIONS[0][1]}"
@@ -190,14 +194,15 @@ class WeatherTab(tk.Frame):
 
         # Forecast periods
         for period in periods:
-            period_frame = tk.Frame(self.content_frame, bg=BUTTON_BG)
+            period_frame = tk.Frame(self.content_frame, bg=CARD_BG)
             period_frame.pack(fill=tk.X, padx=PADDING * 2, pady=PADDING)
 
-            # Period name and temp
+            # Period name and temp with emoji
+            emoji = period.get('icon', '🌤️')
             period_header = tk.Label(
                 period_frame,
-                text=f"{period['name']}: {period['temperature']}°F",
-                bg=BUTTON_BG,
+                text=f"{emoji} {period['name']}: {period['temperature']}°F",
+                bg=CARD_BG,
                 fg=TEXT_COLOR,
                 font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold')
             )
@@ -208,7 +213,7 @@ class WeatherTab(tk.Frame):
             conditions_label = tk.Label(
                 period_frame,
                 text=conditions_text,
-                bg=BUTTON_BG,
+                bg=CARD_BG,
                 fg=TEXT_COLOR,
                 font=(FONT_FAMILY, FONT_SIZE_SMALL)
             )
@@ -222,7 +227,7 @@ class WeatherTab(tk.Frame):
             wind_label = tk.Label(
                 period_frame,
                 text=wind_text,
-                bg=BUTTON_BG,
+                bg=CARD_BG,
                 fg=TEXT_COLOR,
                 font=(FONT_FAMILY, FONT_SIZE_SMALL)
             )
