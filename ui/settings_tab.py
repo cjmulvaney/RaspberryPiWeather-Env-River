@@ -160,7 +160,7 @@ class SettingsTab(tk.Frame):
         # Description
         description = tk.Label(
             content,
-            text="Adjust how fast the screen scrolls when you drag:",
+            text="Control scroll speed - lower = smoother & more control:",
             bg=CARD_BG,
             fg=TEXT_MUTED,
             font=(FONT_FAMILY, FONT_SIZE_SMALL),

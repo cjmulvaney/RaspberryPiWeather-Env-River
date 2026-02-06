@@ -12,20 +12,10 @@ class OverviewTab(tk.Frame):
         super().__init__(parent, bg=BG_COLOR)
         self.app_data = app_data
 
-        # Create scrollable container
-        self.canvas = tk.Canvas(self, bg=BG_COLOR, highlightthickness=0)
-        self.canvas.pack(fill=tk.BOTH, expand=True)
-
-        self.content_frame = tk.Frame(self.canvas, bg=BG_COLOR)
-        self.canvas.create_window((0, 0), window=self.content_frame, anchor="nw")
-
-        # Enable touch scrolling with sensitivity from constants
-        from ui.components import enable_touch_scroll
-        enable_touch_scroll(self.canvas, sensitivity=SCROLL_SENSITIVITY)
-
+        # NO SCROLLING - Direct frame layout
         # Compact title with emoji and time on same line
-        title_frame = tk.Frame(self.content_frame, bg=BG_COLOR)
-        title_frame.pack(pady=(PADDING, PADDING // 2))
+        title_frame = tk.Frame(self, bg=BG_COLOR)
+        title_frame.pack(pady=(PADDING // 2, 0))
 
         self.title_label = tk.Label(
             title_frame,
@@ -34,7 +24,7 @@ class OverviewTab(tk.Frame):
             fg=TEXT_COLOR,
             font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold')
         )
-        self.title_label.pack(side=tk.LEFT, padx=(PADDING * 2, PADDING))
+        self.title_label.pack(side=tk.LEFT, padx=(PADDING, PADDING // 2))
 
         self.time_label = tk.Label(
             title_frame,
@@ -45,20 +35,16 @@ class OverviewTab(tk.Frame):
         )
         self.time_label.pack(side=tk.LEFT)
 
-        # Create card sections
+        # Create card sections directly (no canvas wrapper)
         self._create_river_card()
         self._create_weather_card()
         self._create_indoor_card()
-
-        # Configure canvas scrolling
-        self.content_frame.bind('<Configure>',
-                               lambda e: self.canvas.configure(scrollregion=self.canvas.bbox('all')))
 
     def _create_river_card(self):
         """Create river information card."""
         # Card container
         card = tk.Frame(
-            self.content_frame,
+            self,
             bg=CARD_BG,
             relief=tk.FLAT,
             borderwidth=0
@@ -96,7 +82,7 @@ class OverviewTab(tk.Frame):
         """Create weather information card."""
         # Card container
         card = tk.Frame(
-            self.content_frame,
+            self,
             bg=CARD_BG,
             relief=tk.FLAT,
             borderwidth=0
@@ -134,7 +120,7 @@ class OverviewTab(tk.Frame):
         """Create indoor air quality card."""
         # Card container
         card = tk.Frame(
-            self.content_frame,
+            self,
             bg=CARD_BG,
             relief=tk.FLAT,
             borderwidth=0

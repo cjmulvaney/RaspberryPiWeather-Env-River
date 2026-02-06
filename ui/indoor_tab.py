@@ -207,12 +207,14 @@ class IndoorTab(tk.Frame):
         ]
 
         for metric_key, metric_label in metrics:
+            is_selected = (metric_key == self.selected_metric)
             btn = TouchButton(
                 sidebar,
-                text=metric_label + (" ◄──" if metric_key == self.selected_metric else ""),
+                text=metric_label + (" ✓" if is_selected else ""),
                 command=lambda m=metric_key: self.select_metric(m),
                 font=(FONT_FAMILY, FONT_SIZE_SMALL),
-                anchor='w'
+                anchor='w',
+                bg=ACCENT_COLOR if is_selected else BUTTON_BG
             )
             btn.pack(fill=tk.X, padx=5, pady=2)
 
@@ -256,14 +258,16 @@ class IndoorTab(tk.Frame):
             )
             btn.pack(side=tk.LEFT, padx=2)
 
-        # Back button
+        # Back button - prominent at top
         back_btn = TouchButton(
             graph_area,
-            text="Back to Current View",
+            text="◀ Back to Sensors",
             command=self.show_main_view,
-            font=(FONT_FAMILY, FONT_SIZE_MEDIUM)
+            font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold'),
+            bg=WARNING_ORANGE,
+            height=2
         )
-        back_btn.pack(pady=PADDING)
+        back_btn.pack(pady=PADDING, side=tk.BOTTOM)
 
         # Draw initial graph
         self.draw_graph()

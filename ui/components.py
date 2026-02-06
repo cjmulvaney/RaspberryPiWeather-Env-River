@@ -12,21 +12,21 @@ def enable_touch_scroll(canvas, sensitivity=3):
     Args:
         canvas: The canvas widget to enable scrolling on
         sensitivity: Scroll sensitivity level (1-5)
-                    1 = Very Slow (divide by 8)
-                    2 = Slow (divide by 4)
-                    3 = Normal (divide by 2) [default]
-                    4 = Fast (divide by 1.25)
-                    5 = Very Fast (no division)
+                    1 = Very Slow (divide by 20)
+                    2 = Slow (divide by 10)
+                    3 = Normal (divide by 5) [default]
+                    4 = Fast (divide by 3)
+                    5 = Very Fast (divide by 2)
     """
-    # Map sensitivity to divisor
+    # Map sensitivity to divisor - much higher values for smoother scrolling
     sensitivity_map = {
-        1: 8.0,    # Very Slow
-        2: 4.0,    # Slow
-        3: 2.0,    # Normal
-        4: 1.25,   # Fast
-        5: 1.0     # Very Fast
+        1: 20.0,   # Very Slow - very controlled
+        2: 10.0,   # Slow - smooth control
+        3: 5.0,    # Normal - balanced
+        4: 3.0,    # Fast - quicker response
+        5: 2.0     # Very Fast - responsive
     }
-    divisor = sensitivity_map.get(sensitivity, 2.0)
+    divisor = sensitivity_map.get(sensitivity, 5.0)
 
     # Touch scrolling state
     touch_state = {'start_y': 0, 'last_y': 0}
@@ -144,8 +144,8 @@ class ScrollableFrame(tk.Frame):
         # Scroll the canvas
         # Get sensitivity from constants (default to 3 = Normal)
         sensitivity = getattr(self, 'scroll_sensitivity', 3)
-        sensitivity_map = {1: 8.0, 2: 4.0, 3: 2.0, 4: 1.25, 5: 1.0}
-        divisor = sensitivity_map.get(sensitivity, 2.0)
+        sensitivity_map = {1: 20.0, 2: 10.0, 3: 5.0, 4: 3.0, 5: 2.0}
+        divisor = sensitivity_map.get(sensitivity, 5.0)
         self.canvas.yview_scroll(int(delta_y / divisor), "units")
 
     def _on_touch_end(self, event):
