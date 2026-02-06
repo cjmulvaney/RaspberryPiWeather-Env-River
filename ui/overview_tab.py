@@ -1,21 +1,21 @@
-"""Overview tab - Quick glance at all data with polished card design."""
+"""Overview tab - Quick glance at all data in horizontal layout."""
 import tkinter as tk
 from datetime import datetime
 from config.constants import *
 
 
 class OverviewTab(tk.Frame):
-    """Overview tab showing summary of all data with beautiful card layouts."""
+    """Overview tab showing summary of all data in efficient horizontal layout."""
 
     def __init__(self, parent, app_data):
         """Initialize overview tab."""
         super().__init__(parent, bg=BG_COLOR)
         self.app_data = app_data
 
-        # NO SCROLLING - Direct frame layout
+        # NO SCROLLING - Everything fits on one screen
         # Compact title with emoji and time on same line
         title_frame = tk.Frame(self, bg=BG_COLOR)
-        title_frame.pack(pady=(PADDING // 2, 0))
+        title_frame.pack(fill=tk.X, pady=(PADDING // 2, PADDING // 2))
 
         self.title_label = tk.Label(
             title_frame,
@@ -35,121 +35,109 @@ class OverviewTab(tk.Frame):
         )
         self.time_label.pack(side=tk.LEFT)
 
-        # Create card sections directly (no canvas wrapper)
-        self._create_river_card()
-        self._create_weather_card()
-        self._create_indoor_card()
+        # HORIZONTAL LAYOUT - Two columns for better space usage
+        columns_frame = tk.Frame(self, bg=BG_COLOR)
+        columns_frame.pack(fill=tk.BOTH, expand=True, padx=PADDING)
 
-    def _create_river_card(self):
+        # Left column - Rivers and Weather
+        left_column = tk.Frame(columns_frame, bg=BG_COLOR)
+        left_column.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, PADDING // 2))
+
+        # Right column - Indoor Air
+        right_column = tk.Frame(columns_frame, bg=BG_COLOR)
+        right_column.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(PADDING // 2, 0))
+
+        # Create cards in columns
+        self._create_river_card(left_column)
+        self._create_weather_card(left_column)
+        self._create_indoor_card(right_column)
+
+    def _create_river_card(self, parent):
         """Create river information card."""
-        # Card container
-        card = tk.Frame(
-            self,
-            bg=CARD_BG,
-            relief=tk.FLAT,
-            borderwidth=0
-        )
-        card.pack(fill=tk.X, padx=PADDING * 2, pady=PADDING // 2)
+        card = tk.Frame(parent, bg=CARD_BG, relief=tk.FLAT, borderwidth=0)
+        card.pack(fill=tk.BOTH, expand=True, pady=(0, PADDING // 2))
 
-        # Header with emoji
-        header = tk.Frame(card, bg=CARD_BG)
-        header.pack(fill=tk.X, padx=PADDING, pady=(PADDING, PADDING // 2))
-
-        tk.Label(
-            header,
+        # Header
+        header = tk.Label(
+            card,
             text="🏞️ RIVERS",
             bg=CARD_BG,
             fg=ACCENT_COLOR,
-            font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold')
-        ).pack(side=tk.LEFT)
+            font=(FONT_FAMILY, FONT_SIZE_SMALL, 'bold')
+        )
+        header.pack(fill=tk.X, padx=PADDING // 2, pady=(PADDING // 2, 0))
 
-        # Content area
+        # Content
         self.river_content_frame = tk.Frame(card, bg=CARD_BG)
-        self.river_content_frame.pack(fill=tk.X, padx=PADDING, pady=(0, PADDING))
+        self.river_content_frame.pack(fill=tk.BOTH, expand=True, padx=PADDING // 2, pady=(0, PADDING // 2))
 
-        # Placeholder label (will be replaced with real data)
+        # Placeholder
         self.river_name_label = tk.Label(
             self.river_content_frame,
             text="No river pinned",
             bg=CARD_BG,
             fg=TEXT_MUTED,
-            font=(FONT_FAMILY, FONT_SIZE_MEDIUM),
+            font=(FONT_FAMILY, FONT_SIZE_SMALL),
             anchor='w'
         )
         self.river_name_label.pack(fill=tk.X, pady=2)
 
-    def _create_weather_card(self):
+    def _create_weather_card(self, parent):
         """Create weather information card."""
-        # Card container
-        card = tk.Frame(
-            self,
-            bg=CARD_BG,
-            relief=tk.FLAT,
-            borderwidth=0
-        )
-        card.pack(fill=tk.X, padx=PADDING * 2, pady=PADDING // 2)
+        card = tk.Frame(parent, bg=CARD_BG, relief=tk.FLAT, borderwidth=0)
+        card.pack(fill=tk.BOTH, expand=True, pady=(PADDING // 2, 0))
 
-        # Header with emoji
-        header = tk.Frame(card, bg=CARD_BG)
-        header.pack(fill=tk.X, padx=PADDING, pady=(PADDING, PADDING // 2))
-
-        tk.Label(
-            header,
+        # Header
+        header = tk.Label(
+            card,
             text="🌤️ WEATHER",
             bg=CARD_BG,
             fg=ACCENT_COLOR,
-            font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold')
-        ).pack(side=tk.LEFT)
+            font=(FONT_FAMILY, FONT_SIZE_SMALL, 'bold')
+        )
+        header.pack(fill=tk.X, padx=PADDING // 2, pady=(PADDING // 2, 0))
 
-        # Content area
+        # Content
         self.weather_content_frame = tk.Frame(card, bg=CARD_BG)
-        self.weather_content_frame.pack(fill=tk.X, padx=PADDING, pady=(0, PADDING))
+        self.weather_content_frame.pack(fill=tk.BOTH, expand=True, padx=PADDING // 2, pady=(0, PADDING // 2))
 
-        # Placeholder labels (will be replaced with real data)
+        # Placeholder
         self.weather_location_label = tk.Label(
             self.weather_content_frame,
             text="Loading...",
             bg=CARD_BG,
             fg=TEXT_MUTED,
-            font=(FONT_FAMILY, FONT_SIZE_MEDIUM),
+            font=(FONT_FAMILY, FONT_SIZE_SMALL),
             anchor='w'
         )
         self.weather_location_label.pack(fill=tk.X, pady=2)
 
-    def _create_indoor_card(self):
-        """Create indoor air quality card."""
-        # Card container
-        card = tk.Frame(
-            self,
-            bg=CARD_BG,
-            relief=tk.FLAT,
-            borderwidth=0
-        )
-        card.pack(fill=tk.X, padx=PADDING * 2, pady=PADDING // 2)
+    def _create_indoor_card(self, parent):
+        """Create indoor air quality card - FULL HEIGHT."""
+        card = tk.Frame(parent, bg=CARD_BG, relief=tk.FLAT, borderwidth=0)
+        card.pack(fill=tk.BOTH, expand=True)
 
-        # Header with emoji
-        header = tk.Frame(card, bg=CARD_BG)
-        header.pack(fill=tk.X, padx=PADDING, pady=(PADDING, PADDING // 2))
-
-        tk.Label(
-            header,
+        # Header
+        header = tk.Label(
+            card,
             text="🏠 INDOOR AIR",
             bg=CARD_BG,
             fg=ACCENT_COLOR,
-            font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold')
-        ).pack(side=tk.LEFT)
+            font=(FONT_FAMILY, FONT_SIZE_SMALL, 'bold')
+        )
+        header.pack(fill=tk.X, padx=PADDING // 2, pady=(PADDING // 2, 0))
 
-        # Content area
+        # Content
         self.indoor_content_frame = tk.Frame(card, bg=CARD_BG)
-        self.indoor_content_frame.pack(fill=tk.X, padx=PADDING, pady=(0, PADDING))
+        self.indoor_content_frame.pack(fill=tk.BOTH, expand=True, padx=PADDING // 2, pady=(0, PADDING // 2))
 
-        # Placeholder labels (will be replaced with real data)
+        # Placeholder
         self.indoor_main_label = tk.Label(
             self.indoor_content_frame,
             text="Reading sensors...",
             bg=CARD_BG,
             fg=TEXT_MUTED,
-            font=(FONT_FAMILY, FONT_SIZE_MEDIUM),
+            font=(FONT_FAMILY, FONT_SIZE_SMALL),
             anchor='w'
         )
         self.indoor_main_label.pack(fill=tk.X, pady=2)
@@ -170,7 +158,6 @@ class OverviewTab(tk.Frame):
 
     def _update_rivers(self):
         """Update rivers section with pinned river."""
-        # Clear existing content
         for widget in self.river_content_frame.winfo_children():
             widget.destroy()
 
@@ -179,130 +166,87 @@ class OverviewTab(tk.Frame):
 
         if pinned_river and pinned_river in river_data:
             data = river_data[pinned_river]
-            name = pinned_river[0]  # River name from tuple
-            site_data = data
+            name = pinned_river[0]
 
-            # River name with star
+            # River name
             name_label = tk.Label(
                 self.river_content_frame,
                 text=f"★ {name}",
                 bg=CARD_BG,
                 fg=TEXT_COLOR,
-                font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold'),
-                anchor='w'
+                font=(FONT_FAMILY, FONT_SIZE_SMALL, 'bold'),
+                anchor='w',
+                wraplength=280
             )
-            name_label.pack(fill=tk.X, pady=(0, PADDING // 2))
+            name_label.pack(fill=tk.X, pady=(0, 2))
 
-            # Flow data
-            flow_cfs = site_data.get('flow_cfs')
+            # Flow data - compact
+            flow_cfs = data.get('flow_cfs')
             if flow_cfs:
-                flow_frame = tk.Frame(self.river_content_frame, bg=CARD_BG)
-                flow_frame.pack(fill=tk.X, pady=2)
-
-                tk.Label(
-                    flow_frame,
-                    text="💧 Flow:",
-                    bg=CARD_BG,
-                    fg=TEXT_MUTED,
-                    font=(FONT_FAMILY, FONT_SIZE_SMALL),
-                    width=10,
-                    anchor='w'
-                ).pack(side=tk.LEFT)
-
-                # Calculate flow change
-                flow_text = f"{flow_cfs:,.0f} CFS"
+                flow_text = f"💧 {flow_cfs:,.0f} CFS"
                 flow_color = TEXT_COLOR
 
-                if site_data.get('flow_24h_ago'):
-                    change = flow_cfs - site_data['flow_24h_ago']
+                if data.get('flow_24h_ago'):
+                    change = flow_cfs - data['flow_24h_ago']
                     if change > 0:
-                        flow_text += f"  ↑ {abs(change):,.0f}"
+                        flow_text += f" ↑{abs(change):,.0f}"
                         flow_color = RIVER_HIGH
                     elif change < 0:
-                        flow_text += f"  ↓ {abs(change):,.0f}"
+                        flow_text += f" ↓{abs(change):,.0f}"
                         flow_color = RIVER_LOW
-                    else:
-                        flow_text += "  →"
-                        flow_color = RIVER_NORMAL
 
                 tk.Label(
-                    flow_frame,
+                    self.river_content_frame,
                     text=flow_text,
                     bg=CARD_BG,
                     fg=flow_color,
-                    font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold'),
-                    anchor='w'
-                ).pack(side=tk.LEFT)
-
-            # Temperature data
-            temp_f = site_data.get('temp_f')
-            if temp_f and temp_f > -100:  # Filter out bad data
-                temp_frame = tk.Frame(self.river_content_frame, bg=CARD_BG)
-                temp_frame.pack(fill=tk.X, pady=2)
-
-                tk.Label(
-                    temp_frame,
-                    text="🌡️ Temp:",
-                    bg=CARD_BG,
-                    fg=TEXT_MUTED,
                     font=(FONT_FAMILY, FONT_SIZE_SMALL),
-                    width=10,
                     anchor='w'
-                ).pack(side=tk.LEFT)
+                ).pack(fill=tk.X, pady=1)
 
-                # Calculate temp change
-                temp_text = f"{temp_f:.1f}°F"
+            # Temperature data - compact
+            temp_f = data.get('temp_f')
+            if temp_f and temp_f > -100:
+                temp_text = f"🌡️ {temp_f:.1f}°F"
                 temp_color = TEXT_COLOR
 
-                if site_data.get('temp_24h_ago') and site_data['temp_24h_ago'] > -100:
-                    change = temp_f - site_data['temp_24h_ago']
+                if data.get('temp_24h_ago') and data['temp_24h_ago'] > -100:
+                    change = temp_f - data['temp_24h_ago']
                     if abs(change) > 0.5:
                         if change > 0:
-                            temp_text += f"  ↑ {abs(change):.1f}°"
+                            temp_text += f" ↑{abs(change):.1f}°"
                             temp_color = WARNING_ORANGE
                         else:
-                            temp_text += f"  ↓ {abs(change):.1f}°"
+                            temp_text += f" ↓{abs(change):.1f}°"
                             temp_color = ACCENT_COLOR
 
                 tk.Label(
-                    temp_frame,
+                    self.river_content_frame,
                     text=temp_text,
                     bg=CARD_BG,
                     fg=temp_color,
-                    font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold'),
+                    font=(FONT_FAMILY, FONT_SIZE_SMALL),
                     anchor='w'
-                ).pack(side=tk.LEFT)
-
+                ).pack(fill=tk.X, pady=1)
         else:
-            # No river pinned
             tk.Label(
                 self.river_content_frame,
-                text="⭐ No river pinned",
+                text="⭐ No river pinned\nGo to River Conditions\nto pin a favorite",
                 bg=CARD_BG,
                 fg=TEXT_MUTED,
-                font=(FONT_FAMILY, FONT_SIZE_MEDIUM),
-                anchor='w'
-            ).pack(fill=tk.X)
-
-            tk.Label(
-                self.river_content_frame,
-                text="Go to River Conditions tab to pin a favorite",
-                bg=CARD_BG,
-                fg=TEXT_FAINT,
                 font=(FONT_FAMILY, FONT_SIZE_SMALL),
-                anchor='w'
-            ).pack(fill=tk.X, pady=(5, 0))
+                anchor='w',
+                justify=tk.LEFT
+            ).pack(fill=tk.X)
 
     def _update_weather(self):
         """Update weather section with default town."""
-        # Clear existing content
         for widget in self.weather_content_frame.winfo_children():
             widget.destroy()
 
         weather_data = self.app_data.get('weather_data', {})
 
         if weather_data:
-            # Get first location (default)
             first_location = list(weather_data.keys())[0] if weather_data else None
 
             if first_location and first_location in weather_data:
@@ -310,100 +254,73 @@ class OverviewTab(tk.Frame):
                 current = data.get('current', {})
                 periods = data.get('periods', [])
 
-                # Location and current conditions
-                location_frame = tk.Frame(self.weather_content_frame, bg=CARD_BG)
-                location_frame.pack(fill=tk.X, pady=(0, PADDING // 2))
-
+                # Location with emoji
                 emoji = current.get('icon', '🌤️')
                 temp = current.get('temperature', 'N/A')
                 condition = current.get('conditions', 'N/A')
 
                 tk.Label(
-                    location_frame,
+                    self.weather_content_frame,
                     text=f"{emoji} {first_location}",
                     bg=CARD_BG,
                     fg=TEXT_COLOR,
-                    font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold'),
+                    font=(FONT_FAMILY, FONT_SIZE_SMALL, 'bold'),
                     anchor='w'
-                ).pack(side=tk.LEFT)
+                ).pack(fill=tk.X, pady=(0, 2))
 
-                # Current temperature - large and prominent
-                current_frame = tk.Frame(self.weather_content_frame, bg=CARD_BG)
-                current_frame.pack(fill=tk.X, pady=2)
-
+                # Temperature - large
                 tk.Label(
-                    current_frame,
+                    self.weather_content_frame,
                     text=f"{temp}°F",
                     bg=CARD_BG,
                     fg=ACCENT_COLOR,
                     font=(FONT_FAMILY, FONT_SIZE_LARGE, 'bold'),
                     anchor='w'
-                ).pack(side=tk.LEFT, padx=(0, 10))
+                ).pack(fill=tk.X, pady=1)
 
+                # Condition
                 tk.Label(
-                    current_frame,
+                    self.weather_content_frame,
                     text=condition,
                     bg=CARD_BG,
                     fg=TEXT_COLOR,
-                    font=(FONT_FAMILY, FONT_SIZE_MEDIUM),
-                    anchor='w'
-                ).pack(side=tk.LEFT)
+                    font=(FONT_FAMILY, FONT_SIZE_SMALL),
+                    anchor='w',
+                    wraplength=280
+                ).pack(fill=tk.X, pady=1)
 
-                # Next 24 hours high/low
+                # Next 24hrs high/low - compact
                 if len(periods) >= 2:
-                    forecast_frame = tk.Frame(self.weather_content_frame, bg=CARD_BG)
-                    forecast_frame.pack(fill=tk.X, pady=2)
-
                     high = periods[0].get('temperature', 'N/A')
                     low = periods[1].get('temperature', 'N/A')
 
                     tk.Label(
-                        forecast_frame,
-                        text="Next 24hrs:",
+                        self.weather_content_frame,
+                        text=f"Next 24hrs: ↑{high}°F  ↓{low}°F",
                         bg=CARD_BG,
                         fg=TEXT_MUTED,
                         font=(FONT_FAMILY, FONT_SIZE_SMALL),
                         anchor='w'
-                    ).pack(side=tk.LEFT, padx=(0, 10))
-
-                    tk.Label(
-                        forecast_frame,
-                        text=f"↑ {high}°F",
-                        bg=CARD_BG,
-                        fg=WARNING_ORANGE,
-                        font=(FONT_FAMILY, FONT_SIZE_SMALL, 'bold'),
-                        anchor='w'
-                    ).pack(side=tk.LEFT, padx=(0, 10))
-
-                    tk.Label(
-                        forecast_frame,
-                        text=f"↓ {low}°F",
-                        bg=CARD_BG,
-                        fg=ACCENT_COLOR,
-                        font=(FONT_FAMILY, FONT_SIZE_SMALL, 'bold'),
-                        anchor='w'
-                    ).pack(side=tk.LEFT)
-
+                    ).pack(fill=tk.X, pady=(2, 0))
             else:
                 tk.Label(
                     self.weather_content_frame,
-                    text="No weather data available",
+                    text="No weather data",
                     bg=CARD_BG,
                     fg=TEXT_MUTED,
-                    font=(FONT_FAMILY, FONT_SIZE_MEDIUM)
+                    font=(FONT_FAMILY, FONT_SIZE_SMALL)
                 ).pack(fill=tk.X)
         else:
             tk.Label(
                 self.weather_content_frame,
-                text="Loading weather data...",
+                text="Loading weather...",
                 bg=CARD_BG,
                 fg=TEXT_MUTED,
-                font=(FONT_FAMILY, FONT_SIZE_MEDIUM)
+                font=(FONT_FAMILY, FONT_SIZE_SMALL)
             ).pack(fill=tk.X)
 
     def _update_indoor(self):
         """Update indoor section with sensor data."""
-        # Clear existing content
         for widget in self.indoor_content_frame.winfo_children():
             widget.destroy()
 
@@ -412,9 +329,10 @@ class OverviewTab(tk.Frame):
         if sensor_data:
             temp = sensor_data.get('temperature', 'N/A')
             humidity = sensor_data.get('humidity', 'N/A')
+            pressure = sensor_data.get('pressure', 'N/A')
             pm25 = sensor_data.get('pm25', 'N/A')
 
-            # Get air quality status and color
+            # Get air quality status
             if isinstance(pm25, (int, float)):
                 if pm25 <= 12:
                     status = "Good"
@@ -441,78 +359,62 @@ class OverviewTab(tk.Frame):
                 status_color = TEXT_MUTED
                 emoji = "❓"
 
-            # Main sensor grid
-            grid_frame = tk.Frame(self.indoor_content_frame, bg=CARD_BG)
-            grid_frame.pack(fill=tk.X, pady=(0, PADDING // 2))
-
-            # Temperature
-            temp_frame = tk.Frame(grid_frame, bg=CARD_BG)
-            temp_frame.pack(side=tk.LEFT, padx=(0, 20))
-
+            # Temperature - large
             tk.Label(
-                temp_frame,
-                text="🌡️",
+                self.indoor_content_frame,
+                text=f"🌡️ {temp}°F",
                 bg=CARD_BG,
                 fg=TEXT_COLOR,
-                font=(FONT_FAMILY, FONT_SIZE_LARGE)
-            ).pack()
-
-            tk.Label(
-                temp_frame,
-                text=f"{temp}°F",
-                bg=CARD_BG,
-                fg=TEXT_COLOR,
-                font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold')
-            ).pack()
-
-            # Humidity
-            humid_frame = tk.Frame(grid_frame, bg=CARD_BG)
-            humid_frame.pack(side=tk.LEFT, padx=(0, 20))
-
-            tk.Label(
-                humid_frame,
-                text="💧",
-                bg=CARD_BG,
-                fg=TEXT_COLOR,
-                font=(FONT_FAMILY, FONT_SIZE_LARGE)
-            ).pack()
-
-            tk.Label(
-                humid_frame,
-                text=f"{humidity}%",
-                bg=CARD_BG,
-                fg=ACCENT_COLOR,
-                font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold')
-            ).pack()
-
-            # Air Quality - larger emphasis
-            quality_frame = tk.Frame(self.indoor_content_frame, bg=CARD_BG)
-            quality_frame.pack(fill=tk.X, pady=PADDING // 2)
-
-            tk.Label(
-                quality_frame,
-                text=f"{emoji} Air Quality: {status}",
-                bg=CARD_BG,
-                fg=status_color,
                 font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold'),
                 anchor='w'
-            ).pack(fill=tk.X)
+            ).pack(fill=tk.X, pady=(0, 4))
 
+            # Humidity
+            tk.Label(
+                self.indoor_content_frame,
+                text=f"💧 {humidity}%",
+                bg=CARD_BG,
+                fg=ACCENT_COLOR,
+                font=(FONT_FAMILY, FONT_SIZE_SMALL),
+                anchor='w'
+            ).pack(fill=tk.X, pady=2)
+
+            # Pressure
+            if isinstance(pressure, (int, float)):
+                tk.Label(
+                    self.indoor_content_frame,
+                    text=f"🎈 {pressure:.2f} inHg",
+                    bg=CARD_BG,
+                    fg=TEXT_MUTED,
+                    font=(FONT_FAMILY, FONT_SIZE_SMALL),
+                    anchor='w'
+                ).pack(fill=tk.X, pady=2)
+
+            # Air Quality - prominent
+            tk.Label(
+                self.indoor_content_frame,
+                text=f"{emoji} Air: {status}",
+                bg=CARD_BG,
+                fg=status_color,
+                font=(FONT_FAMILY, FONT_SIZE_SMALL, 'bold'),
+                anchor='w'
+            ).pack(fill=tk.X, pady=(4, 2))
+
+            # PM2.5 detail
             if isinstance(pm25, (int, float)):
                 tk.Label(
-                    quality_frame,
+                    self.indoor_content_frame,
                     text=f"PM2.5: {pm25:.1f} µg/m³",
                     bg=CARD_BG,
                     fg=TEXT_MUTED,
                     font=(FONT_FAMILY, FONT_SIZE_SMALL),
                     anchor='w'
-                ).pack(fill=tk.X, pady=(2, 0))
-
+                ).pack(fill=tk.X, pady=1)
         else:
             tk.Label(
                 self.indoor_content_frame,
                 text="📊 Reading sensors...",
                 bg=CARD_BG,
                 fg=TEXT_MUTED,
-                font=(FONT_FAMILY, FONT_SIZE_MEDIUM)
+                font=(FONT_FAMILY, FONT_SIZE_SMALL)
             ).pack(fill=tk.X)

@@ -194,11 +194,11 @@ class IndoorTab(tk.Frame):
         self.graph_view.pack(fill=tk.BOTH, expand=True)
 
         # Sidebar for metric selection
-        sidebar = tk.Frame(self.graph_view, bg=BUTTON_BG, width=150)
-        sidebar.pack(side=tk.LEFT, fill=tk.Y)
-        sidebar.pack_propagate(False)
+        self.sidebar = tk.Frame(self.graph_view, bg=BUTTON_BG, width=150)
+        self.sidebar.pack(side=tk.LEFT, fill=tk.Y)
+        self.sidebar.pack_propagate(False)
 
-        metrics = [
+        self.metrics = [
             ('temperature', 'Temperature'),
             ('humidity', 'Humidity'),
             ('pressure', 'Pressure'),
@@ -206,10 +206,11 @@ class IndoorTab(tk.Frame):
             ('pm25', 'PM2.5')
         ]
 
-        for metric_key, metric_label in metrics:
+        self.metric_buttons = {}
+        for metric_key, metric_label in self.metrics:
             is_selected = (metric_key == self.selected_metric)
             btn = TouchButton(
-                sidebar,
+                self.sidebar,
                 text=metric_label + (" ✓" if is_selected else ""),
                 command=lambda m=metric_key: self.select_metric(m),
                 font=(FONT_FAMILY, FONT_SIZE_SMALL),
@@ -217,6 +218,7 @@ class IndoorTab(tk.Frame):
                 bg=ACCENT_COLOR if is_selected else BUTTON_BG
             )
             btn.pack(fill=tk.X, padx=5, pady=2)
+            self.metric_buttons[metric_key] = (btn, metric_label)
 
         # Graph area
         graph_area = tk.Frame(self.graph_view, bg=BG_COLOR)
@@ -258,16 +260,16 @@ class IndoorTab(tk.Frame):
             )
             btn.pack(side=tk.LEFT, padx=2)
 
-        # Back button - prominent at top
+        # Back button - prominent at BOTTOM with padding
         back_btn = TouchButton(
             graph_area,
-            text="◀ Back to Sensors",
+            text="◀ BACK TO SENSORS",
             command=self.show_main_view,
-            font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold'),
+            font=(FONT_FAMILY, FONT_SIZE_LARGE, 'bold'),
             bg=WARNING_ORANGE,
-            height=2
+            height=3
         )
-        back_btn.pack(pady=PADDING, side=tk.BOTTOM)
+        back_btn.pack(side=tk.BOTTOM, fill=tk.X, padx=PADDING * 2, pady=PADDING * 2)
 
         # Draw initial graph
         self.draw_graph()
@@ -277,20 +279,35 @@ class IndoorTab(tk.Frame):
         self.show_graphs = False
         if hasattr(self, 'graph_view'):
             self.graph_view.destroy()
+            del self.graph_view
         self.main_view.pack(fill=tk.BOTH, expand=True)
-        self.create_main_view()
 
     def select_metric(self, metric_key):
         """Select metric to display in graph."""
         self.selected_metric = metric_key
+        # Just redraw the graph, don't recreate entire view
+        if hasattr(self, 'graph_title'):
+            self.graph_title.config(text=f"{self.get_metric_label(metric_key)} - Last {self.selected_hours} Hours")
+        self.draw_graph()
+        # Update sidebar buttons
         if hasattr(self, 'graph_view'):
-            self.show_graph_view()
+            self._update_metric_buttons()
 
     def select_time_range(self, hours):
         """Select time range for graph."""
         self.selected_hours = hours
         self.graph_title.config(text=f"{self.get_metric_label(self.selected_metric)} - Last {hours} Hours")
         self.draw_graph()
+
+    def _update_metric_buttons(self):
+        """Update metric button highlights."""
+        if hasattr(self, 'metric_buttons'):
+            for metric_key, (btn, label) in self.metric_buttons.items():
+                is_selected = (metric_key == self.selected_metric)
+                btn.config(
+                    text=label + (" ✓" if is_selected else ""),
+                    bg=ACCENT_COLOR if is_selected else BUTTON_BG
+                )
 
     def get_metric_label(self, metric_key):
         """Get display label for metric."""
