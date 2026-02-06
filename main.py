@@ -49,6 +49,15 @@ class RiverDashboard(tk.Tk):
         # Make window resizable for development
         self.resizable(True, True)
 
+        # Fullscreen mode for Raspberry Pi
+        if is_raspberry_pi():
+            self.attributes('-fullscreen', True)
+            print("Running in fullscreen mode (press ESC to exit)")
+        
+        # Keyboard shortcuts
+        self.bind('<Escape>', self._exit_fullscreen)
+        self.bind('<F11>', self._toggle_fullscreen)
+
         # Platform info
         print(f"Running on: {get_platform_name()}")
 
@@ -387,6 +396,20 @@ class RiverDashboard(tk.Tk):
             self.alert_overlay = None
 
         self.switch_tab('Indoor Air')
+
+    def _exit_fullscreen(self, event=None):
+        """Exit fullscreen mode (ESC key)."""
+        self.attributes('-fullscreen', False)
+        print("Exited fullscreen mode (press F11 to toggle)")
+    
+    def _toggle_fullscreen(self, event=None):
+        """Toggle fullscreen mode (F11 key)."""
+        current = self.attributes('-fullscreen')
+        self.attributes('-fullscreen', not current)
+        if not current:
+            print("Entered fullscreen mode (press ESC to exit)")
+        else:
+            print("Exited fullscreen mode")
 
     def on_closing(self):
         """Handle application closing."""
