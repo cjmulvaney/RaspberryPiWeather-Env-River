@@ -23,27 +23,27 @@ class OverviewTab(tk.Frame):
         from ui.components import enable_touch_scroll
         enable_touch_scroll(self.canvas)
 
-        # Title with emoji
+        # Compact title with emoji and time on same line
         title_frame = tk.Frame(self.content_frame, bg=BG_COLOR)
-        title_frame.pack(pady=(PADDING * 2, PADDING))
+        title_frame.pack(pady=(PADDING, PADDING // 2))
 
         self.title_label = tk.Label(
             title_frame,
             text=f"📊 OVERVIEW",
             bg=BG_COLOR,
             fg=TEXT_COLOR,
-            font=(FONT_FAMILY, FONT_SIZE_XLARGE, 'bold')
+            font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold')
         )
-        self.title_label.pack()
+        self.title_label.pack(side=tk.LEFT, padx=(PADDING * 2, PADDING))
 
         self.time_label = tk.Label(
             title_frame,
-            text=f"as of {datetime.now().strftime('%I:%M %p')}",
+            text=f"{datetime.now().strftime('%I:%M %p')}",
             bg=BG_COLOR,
             fg=TEXT_MUTED,
             font=(FONT_FAMILY, FONT_SIZE_SMALL)
         )
-        self.time_label.pack()
+        self.time_label.pack(side=tk.LEFT)
 
         # Create card sections
         self._create_river_card()
@@ -63,11 +63,11 @@ class OverviewTab(tk.Frame):
             relief=tk.FLAT,
             borderwidth=0
         )
-        card.pack(fill=tk.X, padx=PADDING * 3, pady=PADDING)
+        card.pack(fill=tk.X, padx=PADDING * 2, pady=PADDING // 2)
 
         # Header with emoji
         header = tk.Frame(card, bg=CARD_BG)
-        header.pack(fill=tk.X, padx=PADDING * 2, pady=(PADDING * 2, PADDING))
+        header.pack(fill=tk.X, padx=PADDING, pady=(PADDING, PADDING // 2))
 
         tk.Label(
             header,
@@ -79,7 +79,7 @@ class OverviewTab(tk.Frame):
 
         # Content area
         self.river_content_frame = tk.Frame(card, bg=CARD_BG)
-        self.river_content_frame.pack(fill=tk.X, padx=PADDING * 2, pady=(0, PADDING * 2))
+        self.river_content_frame.pack(fill=tk.X, padx=PADDING, pady=(0, PADDING))
 
         # Placeholder label (will be replaced with real data)
         self.river_name_label = tk.Label(
@@ -101,11 +101,11 @@ class OverviewTab(tk.Frame):
             relief=tk.FLAT,
             borderwidth=0
         )
-        card.pack(fill=tk.X, padx=PADDING * 3, pady=PADDING)
+        card.pack(fill=tk.X, padx=PADDING * 2, pady=PADDING // 2)
 
         # Header with emoji
         header = tk.Frame(card, bg=CARD_BG)
-        header.pack(fill=tk.X, padx=PADDING * 2, pady=(PADDING * 2, PADDING))
+        header.pack(fill=tk.X, padx=PADDING, pady=(PADDING, PADDING // 2))
 
         tk.Label(
             header,
@@ -117,7 +117,7 @@ class OverviewTab(tk.Frame):
 
         # Content area
         self.weather_content_frame = tk.Frame(card, bg=CARD_BG)
-        self.weather_content_frame.pack(fill=tk.X, padx=PADDING * 2, pady=(0, PADDING * 2))
+        self.weather_content_frame.pack(fill=tk.X, padx=PADDING, pady=(0, PADDING))
 
         # Placeholder labels (will be replaced with real data)
         self.weather_location_label = tk.Label(
@@ -139,11 +139,11 @@ class OverviewTab(tk.Frame):
             relief=tk.FLAT,
             borderwidth=0
         )
-        card.pack(fill=tk.X, padx=PADDING * 3, pady=PADDING)
+        card.pack(fill=tk.X, padx=PADDING * 2, pady=PADDING // 2)
 
         # Header with emoji
         header = tk.Frame(card, bg=CARD_BG)
-        header.pack(fill=tk.X, padx=PADDING * 2, pady=(PADDING * 2, PADDING))
+        header.pack(fill=tk.X, padx=PADDING, pady=(PADDING, PADDING // 2))
 
         tk.Label(
             header,
@@ -155,7 +155,7 @@ class OverviewTab(tk.Frame):
 
         # Content area
         self.indoor_content_frame = tk.Frame(card, bg=CARD_BG)
-        self.indoor_content_frame.pack(fill=tk.X, padx=PADDING * 2, pady=(0, PADDING * 2))
+        self.indoor_content_frame.pack(fill=tk.X, padx=PADDING, pady=(0, PADDING))
 
         # Placeholder labels (will be replaced with real data)
         self.indoor_main_label = tk.Label(
@@ -205,7 +205,7 @@ class OverviewTab(tk.Frame):
                 font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold'),
                 anchor='w'
             )
-            name_label.pack(fill=tk.X, pady=(0, PADDING))
+            name_label.pack(fill=tk.X, pady=(0, PADDING // 2))
 
             # Flow data
             flow_cfs = site_data.get('flow_cfs')
@@ -326,7 +326,7 @@ class OverviewTab(tk.Frame):
 
                 # Location and current conditions
                 location_frame = tk.Frame(self.weather_content_frame, bg=CARD_BG)
-                location_frame.pack(fill=tk.X, pady=(0, PADDING))
+                location_frame.pack(fill=tk.X, pady=(0, PADDING // 2))
 
                 emoji = current.get('icon', '🌤️')
                 temp = current.get('temperature', 'N/A')
@@ -350,7 +350,7 @@ class OverviewTab(tk.Frame):
                     text=f"{temp}°F",
                     bg=CARD_BG,
                     fg=ACCENT_COLOR,
-                    font=(FONT_FAMILY, FONT_SIZE_XLARGE, 'bold'),
+                    font=(FONT_FAMILY, FONT_SIZE_LARGE, 'bold'),
                     anchor='w'
                 ).pack(side=tk.LEFT, padx=(0, 10))
 
@@ -457,7 +457,7 @@ class OverviewTab(tk.Frame):
 
             # Main sensor grid
             grid_frame = tk.Frame(self.indoor_content_frame, bg=CARD_BG)
-            grid_frame.pack(fill=tk.X, pady=(0, PADDING))
+            grid_frame.pack(fill=tk.X, pady=(0, PADDING // 2))
 
             # Temperature
             temp_frame = tk.Frame(grid_frame, bg=CARD_BG)
@@ -501,7 +501,7 @@ class OverviewTab(tk.Frame):
 
             # Air Quality - larger emphasis
             quality_frame = tk.Frame(self.indoor_content_frame, bg=CARD_BG)
-            quality_frame.pack(fill=tk.X, pady=PADDING)
+            quality_frame.pack(fill=tk.X, pady=PADDING // 2)
 
             tk.Label(
                 quality_frame,

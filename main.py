@@ -27,6 +27,7 @@ from ui.overview_tab import OverviewTab
 from ui.river_tab import RiverTab
 from ui.weather_tab import WeatherTab
 from ui.indoor_tab import IndoorTab
+from ui.settings_tab import SettingsTab
 from ui.components import TouchButton
 
 # Platform detection
@@ -102,7 +103,7 @@ class RiverDashboard(tk.Tk):
         tab_frame = tk.Frame(top_bar, bg=BUTTON_BG)
         tab_frame.pack(side=tk.LEFT, fill=tk.Y)
 
-        tabs = ['Overview', 'River Conditions', 'Weather Forecast', 'Indoor Air']
+        tabs = ['Overview', 'River Conditions', 'Weather Forecast', 'Indoor Air', 'Settings']
         for tab_name in tabs:
             btn = TouchButton(
                 tab_frame,
@@ -133,7 +134,8 @@ class RiverDashboard(tk.Tk):
             'Overview': OverviewTab(self.content_area, self.app_data),
             'River Conditions': RiverTab(self.content_area, self.app_data),
             'Weather Forecast': WeatherTab(self.content_area, self.app_data),
-            'Indoor Air': IndoorTab(self.content_area, self.app_data, self.database)
+            'Indoor Air': IndoorTab(self.content_area, self.app_data, self.database),
+            'Settings': SettingsTab(self.content_area, self.app_data, self)
         }
 
         # Show Overview tab by default
