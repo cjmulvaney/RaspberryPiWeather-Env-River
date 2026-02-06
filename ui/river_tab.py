@@ -41,7 +41,7 @@ class RiverTab(tk.Frame):
 
         # Enable touch scrolling
         from ui.components import enable_touch_scroll
-        enable_touch_scroll(self.canvas)
+        enable_touch_scroll(self.canvas, sensitivity=SCROLL_SENSITIVITY)
 
         # Pagination controls
         self.pagination = PaginationControls(

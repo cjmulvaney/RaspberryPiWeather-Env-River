@@ -81,6 +81,10 @@ AQI_THRESHOLDS = {
 # Pagination
 RIVERS_PER_PAGE = 5
 
+# Scroll sensitivity (1-5)
+# 1 = Very Slow, 2 = Slow, 3 = Normal, 4 = Fast, 5 = Very Fast
+SCROLL_SENSITIVITY = 3
+
 # Weather emoji mapping (enhanced)
 WEATHER_EMOJIS = {
     'clear': '☀️',

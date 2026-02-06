@@ -21,6 +21,7 @@ class SettingsTab(tk.Frame):
         self.sensor_display_interval = SENSOR_DISPLAY_INTERVAL
         self.sensor_log_interval = SENSOR_LOG_INTERVAL
         self.api_update_interval = API_UPDATE_INTERVAL
+        self.scroll_sensitivity = SCROLL_SENSITIVITY  # 1-5
 
         # Create scrollable container
         self.canvas = tk.Canvas(self, bg=BG_COLOR, highlightthickness=0)
@@ -29,9 +30,9 @@ class SettingsTab(tk.Frame):
         self.content_frame = tk.Frame(self.canvas, bg=BG_COLOR)
         self.canvas.create_window((0, 0), window=self.content_frame, anchor="nw")
 
-        # Enable touch scrolling
+        # Enable touch scrolling with current sensitivity
         from ui.components import enable_touch_scroll
-        enable_touch_scroll(self.canvas)
+        enable_touch_scroll(self.canvas, sensitivity=SCROLL_SENSITIVITY)
 
         # Title
         title = tk.Label(
@@ -45,6 +46,7 @@ class SettingsTab(tk.Frame):
 
         # Create settings sections
         self._create_display_settings()
+        self._create_scroll_settings()
         self._create_update_settings()
         self._create_system_info()
 
@@ -123,6 +125,77 @@ class SettingsTab(tk.Frame):
         note = tk.Label(
             brightness_frame,
             text="Note: Brightness control works on Raspberry Pi with official display",
+            bg=CARD_BG,
+            fg=TEXT_FAINT,
+            font=(FONT_FAMILY, FONT_SIZE_SMALL),
+            wraplength=400,
+            justify=tk.CENTER
+        )
+        note.pack(pady=PADDING)
+
+    def _create_scroll_settings(self):
+        """Create scroll sensitivity settings section."""
+        # Section card
+        card = tk.Frame(
+            self.content_frame,
+            bg=CARD_BG,
+            relief=tk.FLAT,
+            borderwidth=0
+        )
+        card.pack(fill=tk.X, padx=PADDING * 2, pady=PADDING)
+
+        # Header
+        header = tk.Label(
+            card,
+            text="👆 Touch Scroll Sensitivity",
+            bg=CARD_BG,
+            fg=ACCENT_COLOR,
+            font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold')
+        )
+        header.pack(fill=tk.X, padx=PADDING, pady=(PADDING, PADDING // 2))
+
+        content = tk.Frame(card, bg=CARD_BG)
+        content.pack(fill=tk.X, padx=PADDING * 2, pady=PADDING)
+
+        # Description
+        description = tk.Label(
+            content,
+            text="Adjust how fast the screen scrolls when you drag:",
+            bg=CARD_BG,
+            fg=TEXT_MUTED,
+            font=(FONT_FAMILY, FONT_SIZE_SMALL),
+            anchor='w'
+        )
+        description.pack(fill=tk.X, pady=(0, PADDING))
+
+        # Sensitivity buttons
+        button_frame = tk.Frame(content, bg=CARD_BG)
+        button_frame.pack(fill=tk.X, pady=PADDING)
+
+        sensitivity_levels = [
+            (1, "Very Slow"),
+            (2, "Slow"),
+            (3, "Normal"),
+            (4, "Fast"),
+            (5, "Very Fast")
+        ]
+
+        for level, label in sensitivity_levels:
+            is_current = (level == self.scroll_sensitivity)
+
+            btn = TouchButton(
+                button_frame,
+                text=label + (" ✓" if is_current else ""),
+                command=lambda l=level: self._set_scroll_sensitivity(l),
+                font=(FONT_FAMILY, FONT_SIZE_SMALL),
+                bg=ACCENT_COLOR if is_current else BUTTON_BG
+            )
+            btn.pack(side=tk.LEFT, padx=2, pady=2, expand=True, fill=tk.X)
+
+        # Note about restart
+        note = tk.Label(
+            content,
+            text="Note: Changes apply immediately to all scrollable areas",
             bg=CARD_BG,
             fg=TEXT_FAINT,
             font=(FONT_FAMILY, FONT_SIZE_SMALL),
@@ -318,6 +391,17 @@ class SettingsTab(tk.Frame):
         except Exception as e:
             print(f"Could not set brightness: {e}")
 
+    def _set_scroll_sensitivity(self, level):
+        """Set scroll sensitivity and update globally."""
+        self.scroll_sensitivity = level
+
+        # Update the global constant
+        import config.constants as constants
+        constants.SCROLL_SENSITIVITY = level
+
+        # Recreate settings to update button highlights
+        self._refresh_settings()
+
     def _set_interval(self, key, value):
         """Set update interval."""
         if key == 'sensor_display_interval':
@@ -327,6 +411,11 @@ class SettingsTab(tk.Frame):
         elif key == 'api_update_interval':
             self.api_update_interval = value
 
+        # Recreate settings to update button highlights
+        self._refresh_settings()
+
+    def _refresh_settings(self):
+        """Refresh the settings display."""
         # Recreate the settings to update button highlights
         for widget in self.content_frame.winfo_children():
             widget.destroy()
@@ -343,6 +432,7 @@ class SettingsTab(tk.Frame):
 
         # Recreate sections
         self._create_display_settings()
+        self._create_scroll_settings()
         self._create_update_settings()
         self._create_system_info()
 

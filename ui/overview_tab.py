@@ -19,9 +19,9 @@ class OverviewTab(tk.Frame):
         self.content_frame = tk.Frame(self.canvas, bg=BG_COLOR)
         self.canvas.create_window((0, 0), window=self.content_frame, anchor="nw")
 
-        # Enable touch scrolling
+        # Enable touch scrolling with sensitivity from constants
         from ui.components import enable_touch_scroll
-        enable_touch_scroll(self.canvas)
+        enable_touch_scroll(self.canvas, sensitivity=SCROLL_SENSITIVITY)
 
         # Compact title with emoji and time on same line
         title_frame = tk.Frame(self.content_frame, bg=BG_COLOR)

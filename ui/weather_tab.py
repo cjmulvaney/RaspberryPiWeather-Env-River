@@ -45,7 +45,7 @@ class WeatherTab(tk.Frame):
 
         # Enable touch scrolling
         from ui.components import enable_touch_scroll
-        enable_touch_scroll(self.canvas)
+        enable_touch_scroll(self.canvas, sensitivity=SCROLL_SENSITIVITY)
 
         # Select first location by default
         if WEATHER_LOCATIONS:

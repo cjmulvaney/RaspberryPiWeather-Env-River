@@ -32,9 +32,24 @@ class IndoorTab(tk.Frame):
         for widget in self.main_view.winfo_children():
             widget.destroy()
 
+        # Create scrollable container
+        canvas = tk.Canvas(self.main_view, bg=BG_COLOR, highlightthickness=0)
+        canvas.pack(fill=tk.BOTH, expand=True)
+
+        content_frame = tk.Frame(canvas, bg=BG_COLOR)
+        canvas.create_window((0, 0), window=content_frame, anchor="nw")
+
+        # Enable touch scrolling with sensitivity from constants
+        from ui.components import enable_touch_scroll
+        enable_touch_scroll(canvas, sensitivity=SCROLL_SENSITIVITY)
+
+        # Configure canvas scrolling
+        content_frame.bind('<Configure>',
+                          lambda e: canvas.configure(scrollregion=canvas.bbox('all')))
+
         # Title
         title = tk.Label(
-            self.main_view,
+            content_frame,
             text="INDOOR AIR QUALITY",
             bg=BG_COLOR,
             fg=TEXT_COLOR,
@@ -43,7 +58,7 @@ class IndoorTab(tk.Frame):
         title.pack(pady=PADDING * 2)
 
         # Readings frame
-        readings_frame = tk.Frame(self.main_view, bg=BG_COLOR)
+        readings_frame = tk.Frame(content_frame, bg=BG_COLOR)
         readings_frame.pack(fill=tk.BOTH, expand=True, padx=PADDING * 4)
 
         sensor_data = self.app_data.get('sensor_data', {})
@@ -126,7 +141,7 @@ class IndoorTab(tk.Frame):
 
         # View Graphs button
         graph_btn = TouchButton(
-            self.main_view,
+            content_frame,
             text="View Graphs",
             command=self.show_graph_view,
             font=(FONT_FAMILY, FONT_SIZE_MEDIUM, 'bold'),
@@ -136,7 +151,7 @@ class IndoorTab(tk.Frame):
 
         # Last updated
         last_updated = tk.Label(
-            self.main_view,
+            content_frame,
             text=f"Last Updated: {datetime.now().strftime('%I:%M:%S %p')}",
             bg=BG_COLOR,
             fg=TEXT_COLOR,
