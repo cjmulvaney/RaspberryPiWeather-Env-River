@@ -405,8 +405,25 @@ def main():
     print("Montana River Dashboard")
     print("=" * 50)
 
-    app = RiverDashboard()
-    app.mainloop()
+    try:
+        app = RiverDashboard()
+        app.mainloop()
+    except Exception as e:
+        print("\n" + "=" * 50)
+        print("ERROR: Application crashed!")
+        print("=" * 50)
+        print(f"Error: {e}")
+        print("\nFull traceback:")
+        import traceback
+        traceback.print_exc()
+        print("\n" + "=" * 50)
+        print("Troubleshooting:")
+        print("1. Run: python3 debug_pi.py")
+        print("2. Run: ./diagnose.sh")
+        print("3. Check: PI_TROUBLESHOOTING.md")
+        print("=" * 50)
+        import sys
+        sys.exit(1)
 
 
 if __name__ == "__main__":

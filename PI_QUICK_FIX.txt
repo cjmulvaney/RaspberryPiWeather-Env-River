@@ -1,0 +1,109 @@
+╔════════════════════════════════════════════════════════════════╗
+║     RASPBERRY PI - "PROGRAM EXITED" QUICK FIX                  ║
+╚════════════════════════════════════════════════════════════════╝
+
+RUN THIS FIRST (will diagnose the problem):
+------------------------------------------------------------
+cd ~/montana-river-dashboard
+./diagnose.sh
+
+This creates: diagnostic_report.txt
+Share this file for help!
+
+╔════════════════════════════════════════════════════════════════╗
+║                  MOST COMMON FIXES                             ║
+╚════════════════════════════════════════════════════════════════╝
+
+FIX #1: Running via SSH (no display)
+------------------------------------------------------------
+export DISPLAY=:0
+python3 main.py
+
+OR better: Use VNC or run directly on Pi with monitor
+
+
+FIX #2: Missing dependencies
+------------------------------------------------------------
+pip3 install requests matplotlib
+pip3 install adafruit-circuitpython-bme680
+pip3 install adafruit-circuitpython-pm25
+pip3 install adafruit-blinka
+
+
+FIX #3: Virtual environment not activated
+------------------------------------------------------------
+cd ~/montana-river-dashboard
+source venv/bin/activate
+python3 main.py
+
+
+FIX #4: Tkinter not installed
+------------------------------------------------------------
+sudo apt-get update
+sudo apt-get install python3-tk
+
+
+FIX #5: I2C not enabled (for sensors)
+------------------------------------------------------------
+sudo raspi-config
+# Interface Options > I2C > Enable > Reboot
+
+
+╔════════════════════════════════════════════════════════════════╗
+║              GET THE ACTUAL ERROR MESSAGE                      ║
+╚════════════════════════════════════════════════════════════════╝
+
+Instead of just "Program Exited", capture the real error:
+
+METHOD 1: Run in terminal
+------------------------------------------------------------
+cd ~/montana-river-dashboard
+python3 main.py 2>&1 | tee error.log
+cat error.log
+
+
+METHOD 2: Use debug script
+------------------------------------------------------------
+python3 debug_pi.py > debug.txt 2>&1
+cat debug.txt
+
+
+METHOD 3: Use error capture script
+------------------------------------------------------------
+./run_with_errors.sh
+# Check dashboard_error.log
+
+╔════════════════════════════════════════════════════════════════╗
+║                   TROUBLESHOOTING STEPS                        ║
+╚════════════════════════════════════════════════════════════════╝
+
+1. Run diagnostic: ./diagnose.sh
+2. Check Python version: python3 --version (need 3.9+)
+3. Check display: echo $DISPLAY (should be :0 or :0.0)
+4. Test Tkinter: python3 -c "import tkinter; print('OK')"
+5. Test modules: python3 debug_pi.py
+
+╔════════════════════════════════════════════════════════════════╗
+║                    SHARE WITH ME                               ║
+╚════════════════════════════════════════════════════════════════╝
+
+To get help, share the output of:
+
+./diagnose.sh
+
+OR
+
+python3 main.py 2>&1 | tee full_error.txt
+cat full_error.txt
+
+This shows the ACTUAL error, not just "Program Exited"
+
+╔════════════════════════════════════════════════════════════════╗
+║                  EMERGENCY: TEST WITHOUT GUI                   ║
+╚════════════════════════════════════════════════════════════════╝
+
+If all else fails, test that the logic works:
+
+python3 test_without_gui.py
+
+This verifies sensors, APIs, database work (no GUI needed)
