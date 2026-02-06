@@ -4,8 +4,8 @@
 # Deep, nature-inspired colors that work well with environmental data
 BG_COLOR = "#0c0a09"              # Deep black (darker than stone)
 TEXT_COLOR = "#fef3c7"            # Cream - easy on eyes
-TEXT_MUTED = "rgba(254, 243, 199, 0.8)"  # Muted cream
-TEXT_FAINT = "rgba(254, 243, 199, 0.6)"  # Faint cream
+TEXT_MUTED = "#d4c59d"            # Muted cream (80% opacity approximation)
+TEXT_FAINT = "#b0a576"            # Faint cream (60% opacity approximation)
 
 # Primary theme colors
 ACCENT_COLOR = "#0369a1"          # Sky blue - for primary actions
@@ -17,7 +17,7 @@ FOREST_DARK = "#14532d"           # Deep forest - for emphasis
 BUTTON_BG = "#44403c"             # Stone - neutral buttons
 BUTTON_HOVER = "#57534e"          # Light stone - hover state
 CARD_BG = "#1c1917"               # Slightly lighter than background for cards
-OVERLAY_BG = "rgba(0, 0, 0, 0.7)" # Dark overlay for modals
+OVERLAY_BG = "#1a1a1a"            # Dark overlay for modals (hex instead of rgba)
 
 # Status colors
 GOOD_GREEN = "#166534"            # Forest green
