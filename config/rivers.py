@@ -1,7 +1,16 @@
 """River monitoring station configurations."""
 
+# Montana Regions for filtering
+REGIONS = {
+    'Flathead': ['Flathead', 'Swan', 'Stillwater', 'Whitefish'],
+    'Missoula': ['Clark Fork', 'Bitterroot', 'Blackfoot', 'Rock Creek', 'St. Regis', 'Little Blackfoot'],
+    'Northwest': ['Kootenai', 'Yaak', 'Fisher', 'Thompson'],
+    'Missouri': ['Missouri', 'Madison', 'Gallatin', 'Jefferson', 'Boulder', 'Big Hole', 'Ruby', 'Dearborn', 'Smith', 'Sun', 'Teton', 'Marias'],
+    'All': []  # Shows all rivers
+}
+
 # USGS station IDs for Western Montana rivers
-# Format: (Name, USGS Site ID, has_temperature)
+# Format: (Name, USGS Site ID, has_temperature, region)
 RIVER_STATIONS = [
     # Initial 10 stations
     ("Flathead River at Columbia Falls", "12363000", True),
@@ -48,6 +57,32 @@ RIVER_STATIONS = [
     ("Dearborn River near Craig", "06073500", True),
     ("Smith River near Eden", "06077500", True),
 ]
+
+def get_river_region(river_name):
+    """Determine which region a river belongs to."""
+    name_lower = river_name.lower()
+
+    for region, keywords in REGIONS.items():
+        if region == 'All':
+            continue
+        for keyword in keywords:
+            if keyword.lower() in name_lower:
+                return region
+
+    return 'Missoula'  # Default region
+
+def get_rivers_by_region(region):
+    """Get all rivers in a specific region."""
+    if region == 'All':
+        return RIVER_STATIONS
+
+    filtered = []
+    for river_info in RIVER_STATIONS:
+        river_region = get_river_region(river_info[0])
+        if river_region == region:
+            filtered.append(river_info)
+
+    return filtered
 
 # Historical average data (placeholder - will be fetched from USGS or calculated)
 # Format: {site_id: {month: {flow_avg, temp_avg}}}
